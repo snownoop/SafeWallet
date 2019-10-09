@@ -1,0 +1,423 @@
+Multisig tests txt
+
+new
+
+const Multisig = artifacts.require("Multisig");
+const zeppelin = require('openzeppelin-test-helpers');
+
+contract("Multisig", accounts => {
+
+  let acc1 = accounts[0];	
+  let acc2 = accounts[1];
+
+  it("Balance after deposit should be 100", () => {
+  	let multi;
+
+	return Multisig.deployed()
+	  .then(instance => { 
+	  	multi = instance;
+	  	multi.deposit_CIx({ value: 100 , from: acc1 }); 
+	  })
+	  .then(() => {
+	  	return multi.balances.call(acc1);
+	  })
+	  .then(balance => {
+	    assert.equal(balance.valueOf(), 100, "100 should be the correct balance");
+	  })
+  });
+
+  it("After depositing safely both the balance and associate safe public key have to be correct", () => {
+  	let multi;
+
+	return Multisig.deployed()
+	  .then(instance => { 
+	  	multi = instance;
+	  	multi.deposit(acc1, { value: 100 , from: acc2 }); 
+	  })
+	  .then(() => {return multi.balances.call(acc2);})
+	  .then(balance => {
+	    assert.equal(balance.valueOf(), 100, "100 should be the correct balance");
+	    return multi.safetyKeys.call(acc2);
+	  })
+	  .then(safetyPublickey => {
+	  	assert.equal(safetyPublickey, acc1, "Safety public key is not correct");
+	  })
+  });
+
+  it("Checking state of contract balance after send transaction", () => {
+  	let multi;
+
+  	return Multisig.deployed()
+  	  .then(instance => { 
+  	  	multi = instance;
+  	  	return multi.verifyTransaction_26e(acc1, 5, '0x90e82046e1fa2a07ed5c390ca1812af475d37effed25fd802beac50f8e3ef666177473d8736f0b38b91bccb181a144b17875086fa14a1d2464d69baa35298c001c', {
+  	  		from: acc1
+  	  	})
+  	  })
+  	  .then(() => {
+  	  	return multi.balances.call(acc1);
+  	  })
+  	  .then(balance => {
+  	    assert.equal(balance.valueOf(), 95, "95 should be the correct balance");
+  	  })
+  });
+
+  it("Nonce of acc1 should be 1 after sending transaction", () =>
+  	Multisig.deployed()
+  	  .then(instance => instance.transactionNonces.call(acc1))
+  	  .then(nonce => {
+  	    assert.equal(nonce.valueOf(), 1, "1 nonce wasn't in the first account");
+  	  })
+  );
+
+  it("Recovering funds to backup/safe address should fail if not enough time elapsed", () => {
+
+    let multi;
+
+    return Multisig.deployed()
+      .then(instance => {
+        multi = instance;
+        multi.deposit_CIx({ value: 100 , from: acc2 });
+        return multi.safetyKeys.call(acc2);
+      })
+      .then(safetyPublickey => {
+        assert.equal(safetyPublickey, acc1, "Safety public key is not correct");
+      }) 
+      .then(async () => {
+        await zeppelin.expectRevert(
+          multi.recoverFundsToSafeAddress(acc2, acc1, 5, { from: acc2 }), "Not enough time elapsed to recover to backup address"
+        );
+      });
+  });
+
+  it("Recovering funds to backup/safe address should work if enough time elapsed", () => {
+
+    let multi;
+
+    return Multisig.deployed()
+      .then(instance => {
+        multi = instance;
+        multi.deposit_CIx({ value: 100 , from: acc2 });
+        return multi.safetyKeys.call(acc2);
+      })
+      .then(safetyPublickey => {
+        assert.equal(safetyPublickey, acc1, "Safety public key is not correct");
+      }) 
+      .then(async () => {
+        await zeppelin.time.increase(121);
+        multi.recoverFundsToSafeAddress(acc2, acc1, 5, { from: acc2 });
+        return multi.balances.call(acc2);
+      })
+      .then(balance => {
+        assert.equal(balance.valueOf(), 295, "295 should be the correct balance");
+      });
+  });
+
+  it("Recovering funds to any address should fail if not enough time elapsed", () => {
+
+    let multi;
+
+    return Multisig.deployed()
+      .then(instance => {
+        multi = instance;
+        multi.deposit_CIx({ value: 100 , from: acc2 });
+        return multi.safetyKeys.call(acc2);
+      })
+      .then(safetyPublickey => {
+        assert.equal(safetyPublickey, acc1, "Safety public key is not correct");
+      }) 
+      .then(async () => {
+        await zeppelin.expectRevert(
+          multi.recoverFunds(acc2, acc2, 5, { from: acc2 }), "Not enough time elapsed to recover to any address"
+        );
+      });
+  });
+
+  it("Recovering funds to any address should work if enough time elapsed", () => {
+
+    let multi;
+
+    return Multisig.deployed()
+      .then(instance => {
+        multi = instance;
+        multi.deposit_CIx({ value: 100 , from: acc2 });
+        return multi.safetyKeys.call(acc2);
+      })
+      .then(safetyPublickey => {
+        assert.equal(safetyPublickey, acc1, "Safety public key is not correct");
+      }) 
+      .then(async () => {
+        await zeppelin.time.increase(301);
+        multi.recoverFunds(acc2, acc2, 5, { from: acc2 });
+        return multi.balances.call(acc2);
+      })
+      .then(balance => {
+        assert.equal(balance.valueOf(), 490, "490 should be the correct balance");
+      });
+  });
+
+  it("When the limit is set transaction above the limit should revert, but below the limit should be ok", () => {
+
+    let multi;
+
+    return Multisig.deployed()
+      .then(instance => {
+        multi = instance;
+        multi.setDailyLimit(100, '0x368d0ce72fe0f54dabd98e116771e7fb3ca389d88d6a87a8f3aebe5a6d78000b1b564d33b73bbcf18dbec8a411002c77bb33ecd4828a70338f174ea52fae95a01c' , { from: acc2 });
+      })
+      .then(async () => {
+        await zeppelin.expectRevert(
+          multi.verifyTransaction_26e(acc2, 105, '0xe91b2435812deed86c33dd17da6d8b179ea6bc9d6d777b5ac866719ca4724972157b570ce779fa98c7724479e935880494f8ba67107c5bba361605722c2e2d7c1c', { from: acc2 }), "Transaction amount exceeds daily limit"
+        );
+      })
+      .then(() => {
+        multi.verifyTransaction_26e(acc2, 95, '0x28666608e2365fdab186352268fa8d50fe23ff645d305e9391402fb3dc4b563923576fc96472c2db5ae7cf1666738a85efa64c01051887d9af78a698a04f33f11c', { from: acc2 });
+        return multi.balances.call(acc2);
+      })
+      .then(balance => {
+        assert.equal(balance.valueOf(), 395, "395 should be the correct balance");
+      });
+  });
+
+  it("With limit removed previously failing transaction should be ok", () => {
+
+    let multi;
+
+    return Multisig.deployed()
+      .then(instance => {
+        multi = instance;
+        multi.withdrawLimit('0xcf434363f839b2170e293d18d0ed7e4631a8e5ece54d4e45f4caa3f49171f42f10c79fda4bdfdae99525e3f54c9d889696aa9c4d3f53fe0ef6ed247f2088c8f21c' , { from: acc2 });
+      })
+      .then(() => {
+        multi.verifyTransaction_26e(acc2, 105, '0xe1ae173861fd0030a9df46b7ad3e774051f660975061039c2866015043427cb240c4406e13c286a0da9827618e04e06f8dad0048947d3ba12647efbaf07c3bbc1c', { from: acc2 });
+        return multi.balances.call(acc2);
+      })
+      .then(balance => {
+        assert.equal(balance.valueOf(), 290, "290 should be the correct balance");
+      });
+  });
+
+  it("When the limit is set multiple transaction below the limit should succeed", () => {
+
+    let multi;
+
+    return Multisig.deployed()
+      .then(instance => {
+        multi = instance;
+        multi.setDailyLimit(100, '0xad7226890f04efe246ef45eb029eda6b3729f8da506f8649ce76d568c71c6ab86bc56c9f81bf221899b647d2b264b74346aa827391beb0fdd710d72f9a1fa4341c' , { from: acc2 });
+      })
+      .then(() => {
+        multi.verifyTransaction_26e(acc2, 10, '0xfd4dd3593dcacfbe58c86b40783dab1fa68ab434a0c0c39c41c44e885d56427e080c16abcc4c018031a9d1950dc645bb9658450301407c05ae71d68706d068391b', { from: acc2 });
+        return multi.balances.call(acc2);
+      })
+      .then(() => {
+        multi.verifyTransaction_26e(acc2, 10, '0x24faf65153b18becbe02fcd0b95ba741597ceaa5674fb23986b856a616a28a0909c9f9da25660bc3498468d662c671ea24a3b4a8d1a3d079c1cd02676fa06e461c', { from: acc2 });
+        return multi.balances.call(acc2);
+      })
+      .then(balance => {
+        assert.equal(balance.valueOf(), 270, "270 should be the correct balance");
+      });
+  });
+});
+
+old
+
+const Multisig = artifacts.require("Multisig");
+const zeppelin = require('openzeppelin-test-helpers');
+
+contract("Multisig", accounts => {
+
+  let acc1 = accounts[0];	
+  let acc2 = accounts[1];
+
+  it("Balance after deposit should be 100", () => {
+  	let multi;
+
+	return Multisig.deployed()
+	  .then(instance => { 
+	  	multi = instance;
+	  	multi.deposit_CIx({ value: 100 , from: acc1 }); 
+	  })
+	  .then(() => {
+	  	return multi.balances.call(acc1);
+	  })
+	  .then(balance => {
+	    assert.equal(balance.valueOf(), 100, "100 should be the correct balance");
+	  })
+  });
+
+  it("After depositing safely both the balance and associate safe public key have to be correct", () => {
+  	let multi;
+
+	return Multisig.deployed()
+	  .then(instance => { 
+	  	multi = instance;
+	  	multi.deposit(acc1, { value: 100 , from: acc2 }); 
+	  })
+	  .then(() => {return multi.balances.call(acc2);})
+	  .then(balance => {
+	    assert.equal(balance.valueOf(), 100, "100 should be the correct balance");
+	    return multi.safetyKeys.call(acc2);
+	  })
+	  .then(safetyPublickey => {
+	  	assert.equal(safetyPublickey, acc1, "Safety public key is not correct");
+	  })
+  });
+
+  it("Checking state of contract balance after send transaction", () => {
+  	let multi;
+
+  	return Multisig.deployed()
+  	  .then(instance => { 
+  	  	multi = instance;
+  	  	multi.verifyTransaction_26e(acc2, 5, '0x0c571397d48de7af0a7a512b1ebf448ea6b1e6fc058c88c74bb40cb24e92d6f37f27e50fcbe7e807cad4f2bd2723310bccc62cef0291e79180a0153feef1b5421b', {
+  	  		from: acc1
+  	  	})
+  	  })
+  	  .then(() => {
+  	  	return multi.balances.call(acc1);
+  	  })
+  	  .then(balance => {
+  	    assert.equal(balance.valueOf(), 95, "95 should be the correct balance");
+  	  })
+  });
+
+  it("Nonce of acc1 should be 1 after sending transaction", () =>
+  	Multisig.deployed()
+  	  .then(instance => instance.transactionNonces.call(acc1))
+  	  .then(nonce => {
+  	    assert.equal(nonce.valueOf(), 1, "1 nonce wasn't in the first account");
+  	  })
+  );
+
+  it("Recovering funds to backup/safe address should fail if not enough time elapsed", () => {
+
+    let multi;
+
+    return Multisig.deployed()
+      .then(instance => {
+        multi = instance;
+        multi.deposit_CIx({ value: 100 , from: acc2 });
+        return multi.safetyKeys.call(acc2);
+      })
+      .then(safetyPublickey => {
+        assert.equal(safetyPublickey, acc1, "Safety public key is not correct");
+      }) 
+      .then(async () => {
+        await zeppelin.expectRevert(
+          multi.recoverFundsToSafeAddress(acc2, acc1, 5, { from: acc2 }), "Not enough time elapsed to recover to backup address"
+        );
+      });
+  });
+
+  it("Recovering funds to backup/safe address should work if enough time elapsed", () => {
+
+    let multi;
+
+    return Multisig.deployed()
+      .then(instance => {
+        multi = instance;
+        multi.deposit_CIx({ value: 100 , from: acc2 });
+        return multi.safetyKeys.call(acc2);
+      })
+      .then(safetyPublickey => {
+        assert.equal(safetyPublickey, acc1, "Safety public key is not correct");
+      }) 
+      .then(async () => {
+        await zeppelin.time.increase(121);
+        multi.recoverFundsToSafeAddress(acc2, acc1, 5, { from: acc2 });
+        return multi.balances.call(acc2);
+      })
+      .then(balance => {
+        assert.equal(balance.valueOf(), 295, "295 should be the correct balance");
+      });
+  });
+
+  it("Recovering funds to any address should fail if not enough time elapsed", () => {
+
+    let multi;
+
+    return Multisig.deployed()
+      .then(instance => {
+        multi = instance;
+        multi.deposit_CIx({ value: 100 , from: acc2 });
+        return multi.safetyKeys.call(acc2);
+      })
+      .then(safetyPublickey => {
+        assert.equal(safetyPublickey, acc1, "Safety public key is not correct");
+      }) 
+      .then(async () => {
+        await zeppelin.expectRevert(
+          multi.recoverFunds(acc2, acc2, 5, { from: acc2 }), "Not enough time elapsed to recover to any address"
+        );
+      });
+  });
+
+  it("Recovering funds to any address should work if enough time elapsed", () => {
+
+    let multi;
+
+    return Multisig.deployed()
+      .then(instance => {
+        multi = instance;
+        multi.deposit_CIx({ value: 100 , from: acc2 });
+        return multi.safetyKeys.call(acc2);
+      })
+      .then(safetyPublickey => {
+        assert.equal(safetyPublickey, acc1, "Safety public key is not correct");
+      }) 
+      .then(async () => {
+        await zeppelin.time.increase(301);
+        multi.recoverFundsToSafeAddress(acc2, acc1, 5, { from: acc2 });
+        return multi.balances.call(acc2);
+      })
+      .then(balance => {
+        assert.equal(balance.valueOf(), 490, "490 should be the correct balance");
+      });
+  });
+
+  it("When the limit is set transaction above the limit should revert, but below the limit should be ok", () => {
+
+    let multi;
+
+    return Multisig.deployed()
+      .then(instance => {
+        multi = instance;
+        multi.setDailyLimit(100, '0x2df5970093a02997b57445d8ddfd660b5c86ba994358a57798810ca1d76bb47915a7c8dbea6e007b99ee5755935c3c0900350baafb118b7e8e94d5e9c5de75521b' , { from: acc2 });
+      })
+      .then(async () => {
+        await zeppelin.expectRevert(
+          multi.verifyTransaction_26e(acc2, 105, '0xd75d6dce2a78fcc2d03a1e11c46f1c1470999dd769860ca0f2b1ca60e78c95b53064bc6aace4a95722e1103483de11bdd5246e41c300bc4aaf09adc4493eef191b', { from: acc2 }), "Transaction amount exceeds daily limit"
+        );
+      })
+      .then(() => {
+        multi.verifyTransaction_26e(acc2, 95, '0x8a0e0f9d21805f47b255a2a520b876b324f18a7b3328074288d227085890df592c56eb0caf5c223e795a3106828afbb5f65a95c4c676115c6fb94a53f7e4abbb1b', { from: acc2 });
+        return multi.balances.call(acc2);
+      })
+      .then(balance => {
+        assert.equal(balance.valueOf(), 395, "395 should be the correct balance");
+      });
+  });
+
+  it("With limit removed previously failing transaction should be ok", () => {
+
+    let multi;
+
+    return Multisig.deployed()
+      .then(instance => {
+        multi = instance;
+        multi.withdrawLimit('0x4f44a086d5839e180eff8916827764603b80f9e1fd91d7353dc68de900b620f867efdfaf5714eb0fbf8657dda0849124d2a8839943693123c43c07ebb88bbdaf1c' , { from: acc2 });
+      })
+      .then(() => {
+        multi.verifyTransaction_26e(acc2, 105, '0x9a89db037307a13ac606efd1722aa6a4061b94b17dd7b2d35378186da78781ce046e96751917149985c68cff1dd0f8fecb78e3b8f963878b1958e012e437037f1c', { from: acc2 });
+        return multi.balances.call(acc2);
+      })
+      .then(balance => {
+        assert.equal(balance.valueOf(), 290, "290 should be the correct balance");
+      });
+  });
+
+});
+
+
+

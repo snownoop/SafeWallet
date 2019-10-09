@@ -1,0 +1,333 @@
+input[type=text] {
+  -webkit-transition: 0.5s;
+  transition: 0.5s;
+  color: darkgreen;
+  outline: none;
+}
+input[type=text]:focus {
+  border: 2px solid #007bff;
+}
+
+::placeholder {
+  color: #007bff;
+ }
+
+.smart {
+	border: 3px solid #007bff;
+	border-radius: 4px;
+	padding: 10px 10px 0px;
+	margin: 30px auto;
+	width: 700px;
+  overflow: auto;
+}
+
+.smartLogin {
+	border: 3px solid #007bff;
+	border-radius: 4px;
+	padding: 10px 10px 0px;
+	margin: 200px auto;
+	width: 400px;
+}
+
+.smartP {
+  	border: 1px solid #007bff; 
+  	padding: 10px; 
+  	border-radius: 2px;
+  	color: darkgreen;
+  	font-size: 1rem;
+  	font-weight: 400;
+  	overflow-wrap: break-word;
+    clear: both;
+}
+
+.smartPLogin {
+  	color: darkgreen;
+  	font-size: 1rem;
+  	font-weight: 400;
+  	overflow-wrap: break-word;
+}
+
+.smartInputLogin {
+	border: 2px solid #9370DB;
+	border-radius: 3px;
+	height: calc(2.5*1.25em + 2px);
+	width: 100%;
+	padding: 0.5rem 0.75rem;
+	margin: 0px 0px 10px 0px;
+  font-size: 0.8rem;
+  box-sizing: border-box;
+  display: inline-block;
+}
+
+.smartButtonLogin {
+	border: 2px solid #007bff;
+	border-radius: 3px;
+	height: calc(2.5*1.25em + 2px);
+	width: 100%;
+	font-weight: 400;
+  color: #007bff;
+  font-weight: 400;
+  line-height: 1.5;
+  box-sizing: border-box;
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+	font-size: 0.8em;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+.smartInput {
+	border: 2px solid #9370DB;
+	border-radius: 3px;
+	height: calc(2.5*1.25em + 2px);
+	width: 66.333334%;
+	padding: 0.5rem 0.75rem;
+	margin: 0% 1.666666% 0% 0%;
+  font-size: 0.8rem;
+  box-sizing: border-box;
+  display: inline-block;
+}
+
+.smartInput2 {
+	border: 2px solid #9370DB;
+	border-radius: 3px;
+	height: calc(2.5*1.25em + 2px);
+	width: 32.333333%;
+	padding: 0.5rem 0.75rem;
+	margin: 0% 1.666666% 0% 0%;
+  font-size: 0.8rem;
+  box-sizing: border-box;
+  display: inline-block;
+}
+
+.smartInput3 {
+	border: 2px solid #9370DB;
+	border-radius: 3px;
+	height: calc(2.5*1.25em + 2px);
+	width: 21%;
+	padding: 0.5rem 0.75rem;
+	margin: 0% 1.66666% 0% 0%;
+  font-size: 0.8rem;
+  box-sizing: border-box;
+  display: inline;
+}
+
+.smartInput4 {
+  border: 2px solid #9370DB;
+  border-radius: 3px;
+  height: calc(2.5*1.25em + 2px);
+  width: 15.333333%;
+  padding: 0.5rem 0.75rem;
+  margin: 0% 1.66666% 0% 0%;
+  font-size: 0.8rem;
+  box-sizing: border-box;
+  display: inline;
+}
+
+.smartButton {
+	border: 2px solid #007bff;
+	border-radius: 3px;
+	height: calc(2.5*1.25em + 2px);
+	width: 32%;
+	font-weight: 400;
+  color: #007bff;
+  font-weight: 400;
+  line-height: 1.5;
+  box-sizing: border-box;
+  display: inline;
+  padding: 0.4rem 0.8rem;
+	font-size: 0.8em;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+.smartButtonLong {
+	border: 2px solid #007bff;
+	border-radius: 3px;
+	height: calc(2.5*1.25em + 2px);
+	width: 100%;
+	font-weight: 400;
+  color: #007bff;
+  font-weight: 400;
+  line-height: 1.5;
+  box-sizing: border-box;
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+	font-size: 0.8em;
+	text-align: center;
+	text-transform: uppercase;
+	margin: 0px 0px 10px 0px;
+  word-wrap: break-word;
+}
+
+.smartButton:hover, .smartButtonLong:hover {
+	background-color: #007bff;
+	color: #fff;
+  	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 10px 0 rgba(0,0,0,0.19);
+}
+
+.smartButton:focus, .smartButtonLong:focus {
+  	outline: 0;
+}
+
+.smartButton:active {
+  	box-shadow: 0 2px 4px 0 rgba(0,0,0,0.5), 0 4px 8px 0 rgba(0,0,0,0.45);
+  	transform: translateY(2px);
+}
+
+@media screen and (max-width: 600px) {
+  .smart, .smartButton, .smartInput, .smartInput2, .smartInput3, .smartInput4 {
+    width: 100%;
+    height: auto;
+    margin: 0px 0px 4px 0px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .smartButtonLong {
+    width: 100%;
+    height: auto;
+    margin: 0px 0px 13px 0px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .smartLogin, .smartInputLogin {
+    width: 100%;
+    margin: 0px 0px 4px 0px;
+  }
+}
+
+.error {
+  color:#db2269;
+  font-size: 0.8em;
+  position: relative;
+  left: 5px;
+  top: -10px;
+}
+
+.errorMultiple{
+  color:#db2269;
+  font-size: 0.8em;
+  position: relative;
+  left: 5px;
+  margin: 0px 44px 0px 0px;
+}
+
+.smth {
+  display: inline-block;
+}
+
+.smartDiv select {
+  outline: 0;
+  padding: 10px;
+  display: inline-block;
+  background-color: white;
+  color: darkgreen;
+  height: calc(2.5em + 4px);
+  width: 100%;
+  border-radius: 0px;
+  border: 0;
+  border-sizing: border-box;
+}
+
+.smartDiv select:focus {
+  outline: 0;
+}
+
+@media screen and (max-width: 600px) {
+  .smartDiv select {
+    width: 100%;
+  }
+}
+
+
+.smartErcP {
+  padding: 10px; 
+  color: darkgreen;
+  font-size: 1rem;
+  font-weight: 400;
+  overflow-wrap: break-word;
+  box-sizing: border-box;
+  display: inline-block;
+  clear: both;
+  margin: 0px;
+}
+
+.smartDiv {
+  position: relative;
+  border: 1px solid #007bff;
+  border-radius: 2px; 
+  margin: 0 0 10px 0;
+}
+
+/*
+.selectBoxArrow {
+  width: 30px;
+  height: 30px;
+  margin: 0;
+  padding: 0;
+  display: inline-block;
+  background-color: #aaa;
+  box-sizing: border-box;
+}
+
+.selectBoxArrowDown {
+  position: absolute;
+  top: 12px;
+  left: 7px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 10px solid #fff;
+  box-sizing: border-box;
+}
+.selectBoxArrowUp {
+  position: absolute;
+  top: 10px;
+  left: 8px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 10px solid #fff;
+  box-sizing: border-box;
+}
+
+.selectBoxContainer {
+  height: 30px;
+  border: 1px solid #aaa;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.selectBoxSelectedItem {
+  display: inline-block;
+  height: 100%;
+  width: 100%;
+  padding: 4px 12px;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
+.selectBoxItems div {
+  border-bottom: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  padding: 6px;
+  padding-left: 20px;
+  box-sizing: border-box;
+  clear:both;
+}
+
+.selectBoxBox {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  box-sizing: border-box;
+}
+*/

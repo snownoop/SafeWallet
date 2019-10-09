@@ -1,0 +1,254 @@
+/* The Modal (background) */
+.modal {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 1000px; /* Full width */
+  height: 1000px; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.c-modal-cover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10; 
+  transform: translateZ(0);
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+.c-modal {
+  border: 3px solid #007bff;
+  border-radius: 4px;
+  width: 400px;
+  height: auto;
+  margin: 100px auto;
+  padding: 1em 1em 0em 1em;
+  background-color: #FFFFFF;
+  box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.c-modal-safety {
+  border: 3px solid #007bff;
+  border-radius: 4px;
+  width: 450px;
+  height: auto;
+  margin: 100px auto;
+  padding: 1em 1em 0em 1em;
+  background-color: #FFFFFF;
+  box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.c-modal-nonce {
+  border: 3px solid #007bff;
+  border-radius: 4px;
+  width: 270px;
+  height: auto;
+  margin: 100px auto;
+  padding: 1em 1em 0em 1em;
+  background-color: #FFFFFF;
+  box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media screen and (max-width: 600px) {
+  .c-modal, .c-modal-safety {
+    width: 100%;
+    heigh: auto;
+    margin: 100px 0px;
+  }
+}
+
+.c-modal__close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: .5em;
+  line-height: 1;
+  border: 1px solid #007bff;
+  box-shadow: 0;
+  cursor: pointer;
+}
+
+.c-modal__close-icon {
+  width: 25px;
+  height: 25px;
+  fill: transparent;
+  stroke: black;
+  stroke-linecap: round;
+  stroke-width: 2;
+}
+
+.c-modal__body {
+  padding-top: .25em;
+}
+
+.u-hide-visually {
+  border: 0 !important;
+  clip: rect(0 0 0 0) !important;
+  height: 1px !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  position: absolute !important;
+  width: 1px !important;
+  white-space: nowrap !important;
+}
+
+.modalText {
+  padding: 10px; 
+  color: darkgreen;
+  font-size: 1rem;
+  font-weight: 400;
+  overflow-wrap: break-word;
+  text-align: left;
+}
+
+.modalTextTx {
+  padding: 10px; 
+  color: darkgreen;
+  font-size: 1rem;
+  font-weight: 400;
+  overflow-wrap: break-word;
+  text-align: left;
+}
+
+.modalTextBlack {
+  color: black;
+}
+
+
+.modalInput {
+  border: 2px solid #9370DB;
+  border-radius: 3px;
+  height: calc(2.5*1.25em + 2px);
+  width: 48%;
+  padding: 0.5rem 0.75rem;
+  margin: 0% 4% 0% 0%;
+  font-size: 0.8rem;
+  box-sizing: border-box;
+  display: inline-block;
+}
+
+.successToken {
+  border: 2px solid green;
+  border-radius: 3px;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  margin: 0px 0px 10px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  display: block;
+}
+
+.failToken {
+  border: 2px solid red;
+  border-radius: 3px;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  margin: 0px 0px 10px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  display: block;
+}
+
+
+.modalButton {
+  border: 2px solid #007bff;
+  border-radius: 3px;
+  height: calc(2.5*1.25em + 2px);
+  width: 48%;
+  font-weight: 400;
+  color: #007bff;
+  font-weight: 400;
+  line-height: 1.5;
+  box-sizing: border-box;
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.modalButton:hover {
+  background-color: #007bff;
+  color: #fff;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 10px 0 rgba(0,0,0,0.19);
+}
+
+.modalButton:focus {
+    outline: 0;
+}
+
+.modalButton:active {
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.5), 0 4px 8px 0 rgba(0,0,0,0.45);
+    transform: translateY(2px);
+}
+
+.modalImg {
+  width: 170px;
+  height: 170px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media screen and (max-width: 600px) {
+  .modalInput, .modalButton {
+    width: 100%;
+    heigh: auto;
+    margin: 0px 0px 5px;
+  }
+}
+
+.errorMsg {
+  width  : 100%;
+  padding: 0;
+ 
+  font-size: 80%;
+  color: white;
+  background-color: #900;
+  border-radius: 0 0 5px 5px;
+ 
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.errorMsg.active {
+  padding: 0.3em;
+}
